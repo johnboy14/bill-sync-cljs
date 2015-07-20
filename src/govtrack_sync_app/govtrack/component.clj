@@ -1,4 +1,4 @@
-(ns govtrack-sync-app.govtrack.file-reader-comp
+(ns govtrack-sync-app.govtrack.component
   (:require [com.stuartsierra.component :as comp]
            [clojure.core.async :as async]
            [clojure.tools.logging :as log]

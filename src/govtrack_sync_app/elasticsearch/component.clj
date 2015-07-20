@@ -1,4 +1,4 @@
-(ns govtrack-sync-app.elasticsearch.elasticsearch
+(ns govtrack-sync-app.elasticsearch.component
   (:require [com.stuartsierra.component :as comp]
             [clojure.core.async :as async]
             [clojure.tools.logging :as log]

@@ -1,4 +1,4 @@
-(ns govtrack-sync-app.channels.channel-maker
+(ns govtrack-sync-app.channels.component
   (:require [com.stuartsierra.component :as comp]
             [clojure.core.async :as async]
             [clojure.tools.logging :as log]))

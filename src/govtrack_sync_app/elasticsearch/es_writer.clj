@@ -25,7 +25,7 @@
 
 (defn write-to-es [connection index type channel]
   (async/go-loop []
-    (let [[batch drained?] (batch channel 100)]
+    (let [[batch drained?] (batch channel 500)]
       (if-not (empty? batch)
         (esrb/bulk-with-index-and-type connection index (str type) (esrb/bulk-index batch)))
         (log/info (str (count batch) " Documents written to ElasticSearch"))
