@@ -12,5 +12,5 @@
   (async/go
     (doseq [file (walk dirpath #".*data.json")]
       (async/>!! channel (slurp file)))
-    (async/close! channel)
+    (async/>!! channel "{\"drained\":\"true\"}")
     (log/info (str "Finished reading directory " dirpath))))

@@ -11,7 +11,7 @@
   (component/system-map 
    :bill-file-chan (chan-maker/new-channel :channel 100)
    :bill-es-chan (chan-maker/new-channel :channel 100)
-   :bill-file-reader (component/using (reader-comp/new-file-reader "/Users/johnervine/govtrack.us-data/data/bills" #".*data.json")
+   :bill-file-reader (component/using (reader-comp/new-file-reader "test-resources/bills" #".*data.json")
                                       {:channels :bill-file-chan})
    :bill-elastic-client (component/using (es-client/new-elasticsearch-client "congress" "bill")
                                          {:channels :bill-es-chan})

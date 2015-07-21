@@ -5,22 +5,20 @@
             [clojure.tools.logging :as log]))
 
 
-(defn lazy-contains? [coll key]
-  (boolean (some #(= % key) coll)))
+(defn drained? [map]
+  (if (contains? map :drained)
+    true
+    false))
 
 (defn batch [channel batch-size]
   (let [timeout-chan (async/timeout 500)
         batch (->> (range batch-size)
                    (map (fn [_]
-                          (let [val (async/alts!! [channel timeout-chan] :priority true)
-                                result (first val)
-                                port (second val)]
-                            (if (and (nil? result) (= port channel))
-                              :drained
-                              result))))
+                          (let [result (first (async/alts!! [channel timeout-chan] :priority true))]
+                            result)))
                    (remove (comp nil?)))]
-      (if (lazy-contains? batch :drained)
-        [(filter #(not (keyword? %)) batch) true]
+      (if (drained? (last batch))
+        [(filter #(not (contains? % :drained)) batch) true]
         [batch false])))
 
 (defn write-to-es [connection index type channel]
