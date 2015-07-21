@@ -10,6 +10,7 @@
                  [clojurewerkz/elastisch "2.1.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.apache.logging.log4j/log4j-slf4j-impl "2.0.2"]
-                 [org.apache.logging.log4j/log4j-core "2.0.2"]]
+                 [org.apache.logging.log4j/log4j-core "2.0.2"]
+                 [csv-map "0.1.1"]]
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.4"]]
                    :source-paths ["dev"]}})

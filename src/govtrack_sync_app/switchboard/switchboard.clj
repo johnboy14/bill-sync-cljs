@@ -4,22 +4,27 @@
             [clojure.tools.logging :as log]
             [cheshire.core :as ch]))
 
-(defn pipe-channels [chan1 chan2]
-  (async/pipe chan1 chan2))
-
-(def xform
+(def bill-transformer
   (comp
     (map #(ch/parse-string % true))
     (map #(assoc % :_id (:bill_id %)))))
 
-(defn pipe-channels [chan1 chan2]
-  (async/pipeline 1 chan2 xform chan1))
+(def people-transformer
+  (comp
+    (map #(if (empty? (:thomas_id %))
+           %
+           (assoc % :_id (:thomas_id %))))))
 
-(defrecord SwitchBoardComponent [bill-file-chan bill-es-chan]
+(defn pipe-channels [chan1 transformer chan2]
+  (async/pipeline 1 chan2 transformer chan1))
+
+(defrecord SwitchBoardComponent [bill-file-chan bill-es-chan
+                                 people-csv-chan people-es-chan]
   comp/Lifecycle
   (start [component]
     (log/info (str "Starting Switchboard compoent"))
-    (pipe-channels (:channel bill-file-chan) (:channel bill-es-chan)))
+    (pipe-channels (:channel bill-file-chan) bill-transformer (:channel bill-es-chan))
+    (pipe-channels (:channel people-csv-chan) people-transformer (:channel people-es-chan)))
   (stop [component]
     (log/info (str "Stopping Switchboard compoent"))))
 
