@@ -7,13 +7,20 @@
 (defn pipe-channels [chan1 transformer chan2]
   (async/pipeline 1 chan2 transformer chan1))
 
+(defn tap-channels [tapFrom tap1 tap2]
+  (let [mult (async/mult tapFrom)]
+    (async/tap mult tap1)
+    (async/tap mult tap2)))
+
 (defrecord SwitchBoardComponent [bill-file-chan bill-es-chan
-                                 people-csv-chan people-es-chan]
+                                 people-csv-chan people-es-chan people-neo-chan]
   comp/Lifecycle
   (start [component]
     (log/info (str "Starting Switchboard compoent"))
     (pipe-channels (:channel bill-file-chan) t/bill-transformer (:channel bill-es-chan))
-    (pipe-channels (:channel people-csv-chan) t/people-transformer (:channel people-es-chan)))
+    ;(pipe-channels (:channel people-csv-chan) t/people-transformer (:channel people-es-chan))
+    (tap-channels (:channel people-csv-chan) (:channel people-es-chan) (:channel people-neo-chan)))
+
   (stop [component]
     (log/info (str "Stopping Switchboard compoent"))))
 
