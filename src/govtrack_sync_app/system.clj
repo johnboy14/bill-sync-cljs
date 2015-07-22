@@ -12,12 +12,15 @@
 
 (defn new-system []
   (component/system-map 
-   :bill-file-chan (chan-maker/new-channel :channel 100)
+   :bill-file-chan (chan-maker/new-channel :channel 100 t/bill-transformer)
    :bill-es-chan (chan-maker/new-channel :channel 100)
+   :bill-neo-chan (chan-maker/new-channel :channel 100)
    :bill-file-reader (component/using (reader-comp/new-file-reader "test-resources/bills" ".*data.json")
                                       {:channels :bill-file-chan})
    :bill-elastic-client (component/using (es-client/new-elasticsearch-client "congress" "bill")
                                          {:channels :bill-es-chan})
+   :bill-neo-client (component/using (neo-client/new-neo-client handler-fns/handle-bill-doc)
+                                     {:channels :bill-neo-chan})
 
    :people-csv-chan (chan-maker/new-channel :channel 100 t/people-transformer)
    :people-es-chan (chan-maker/new-channel :channel 100)
@@ -31,5 +34,6 @@
 
    :switchboard (component/using (switchboard/new-switchboard)
                                  {:bill-file-chan :bill-file-chan :bill-es-chan :bill-es-chan
+                                  :bill-neo-chan :bill-neo-chan
                                   :people-csv-chan :people-csv-chan :people-es-chan :people-es-chan
                                   :people-neo-chan :people-neo-chan})))

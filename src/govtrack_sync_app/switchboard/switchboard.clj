@@ -12,13 +12,12 @@
     (async/tap mult tap1)
     (async/tap mult tap2)))
 
-(defrecord SwitchBoardComponent [bill-file-chan bill-es-chan
+(defrecord SwitchBoardComponent [bill-file-chan bill-es-chan bill-neo-chan
                                  people-csv-chan people-es-chan people-neo-chan]
   comp/Lifecycle
   (start [component]
     (log/info (str "Starting Switchboard compoent"))
-    (pipe-channels (:channel bill-file-chan) t/bill-transformer (:channel bill-es-chan))
-    ;(pipe-channels (:channel people-csv-chan) t/people-transformer (:channel people-es-chan))
+    (tap-channels (:channel bill-file-chan) (:channel bill-es-chan) (:channel bill-neo-chan))
     (tap-channels (:channel people-csv-chan) (:channel people-es-chan) (:channel people-neo-chan)))
 
   (stop [component]
