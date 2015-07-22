@@ -5,7 +5,8 @@
             [govtrack-sync-app.elasticsearch.component :as es-client]
             [govtrack-sync-app.neo4j.component :as neo-client]
             [govtrack-sync-app.switchboard.switchboard :as switchboard]
-            [govtrack-sync-app.transformers.transformers :as t]))
+            [govtrack-sync-app.transformers.transformers :as t]
+            [govtrack-sync-app.neo4j.handlers :as handler-fns]))
 
 
 
@@ -25,7 +26,7 @@
                                        {:channels :people-csv-chan})
    :people-elastic-client (component/using (es-client/new-elasticsearch-client "congress" "person")
                                            {:channels :people-es-chan})
-   :people-neo-client (component/using (neo-client/new-neo-client)
+   :people-neo-client (component/using (neo-client/new-neo-client handler-fns/handle-person-doc)
                                        {:channels :people-neo-chan})
 
    :switchboard (component/using (switchboard/new-switchboard)
