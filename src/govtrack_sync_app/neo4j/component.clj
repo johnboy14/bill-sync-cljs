@@ -3,13 +3,14 @@
             [clojure.tools.logging :as log]
             [com.stuartsierra.component :as comp]
             [clojurewerkz.neocons.rest :as nr]
-            [clojurewerkz.neocons.rest.nodes :as nn]))
+            [clojurewerkz.neocons.rest.nodes :as nn]
+            [govtrack-sync-app.neo4j.handlers :as handler]))
 
 (defn read [connection channel]
   (async/go-loop []
     (let [v (async/<!! channel)]
       (if-not (or (nil? v) (contains? v :drained))
-        (do (nn/create connection v)
+        (do (handler/handle-person-doc connection v)
             (recur))
         (println "Done")))))
 
